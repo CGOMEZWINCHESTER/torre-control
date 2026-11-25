@@ -1,5 +1,5 @@
-const SHELL_CACHE = "torre-shell-v3";
-const API_CACHE = "torre-api-v3";
+const SHELL_CACHE = "torre-shell-v4";
+const API_CACHE = "torre-api-v4";
 const SHELL = [
   "/",
   "/index.html",

@@ -162,7 +162,7 @@ El estado se calcula en `app/services/residents.py` sumando aportaciones aprobad
 - FastAPI monta `static/` en `/`; el service worker y el manifest están en esa carpeta.
 - El service worker usa caché para el shell y para respuestas `GET /api/...`, separando por cabecera `X-User-Id`. Al cambiar de perfil conviene limpiar la caché de la API.
 - El registro del service worker requiere HTTPS o `localhost`; en producción `SECURE_COOKIES=true`.
-- El manifest se llama "Torre 40 · Control vecinal" y el service worker usa las cachés `torre-shell-v3` y `torre-api-v3`.
+- El manifest se llama "Torre 40 · Control vecinal" y el service worker usa las cachés `torre-shell-v4` y `torre-api-v4`.
 
 ## Comandos de validación
 

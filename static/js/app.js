@@ -1368,7 +1368,9 @@ function bindEvents() {
 
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator)) return;
-  navigator.serviceWorker.register("/sw.js").catch(function () {});
+  navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" })
+    .then(function (registration) { return registration.update(); })
+    .catch(function () {});
 }
 
 async function bootstrap() {
