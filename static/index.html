@@ -1,0 +1,520 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="description" content="Control vecinal de Torre Roble: pizarra, tareas, gastos y vecinos." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Torre Roble" />
+    <title>Torre Roble · Control vecinal</title>
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
+    <link rel="stylesheet" href="/css/styles.css?v=2" />
+  </head>
+  <body>
+    <div class="app">
+      <header id="app-header" class="app-header hidden">
+        <div class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="3" width="12" height="18" rx="2" />
+              <path d="M10 7h1M13 7h1M10 11h1M13 11h1M10 15h1M13 15h1M11 21v-3h2v3" />
+            </svg>
+          </span>
+          <span class="brand-copy">
+            <strong>Torre Roble</strong>
+            <small>Control vecinal</small>
+          </span>
+        </div>
+        <div class="header-actions">
+          <span class="user-chip">
+            <span id="header-avatar" class="avatar-holder"></span>
+            <span id="header-user" class="user-name"></span>
+            <span id="header-badge" class="badge badge--success hidden">Comité</span>
+          </span>
+          <button class="btn btn-ghost btn-compact" type="button" data-action="logout">Salir</button>
+        </div>
+      </header>
+
+      <section id="screen-login" class="screen active">
+        <div class="login-wrap">
+          <span class="login-logo" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 21h16M6 21V8l6-4 6 4v13" />
+              <path d="M10 11h1M13 11h1M10 15h1M13 15h1M11 21v-3h2v3" />
+            </svg>
+          </span>
+          <h1 class="login-title">Torre Roble</h1>
+          <p class="login-subtitle">Control vecinal</p>
+          <p class="muted login-help">Elige tu departamento para continuar</p>
+          <div id="profile-grid" class="profile-grid"></div>
+          <div id="pin-panel" class="pin-panel hidden">
+            <button class="link-btn" type="button" data-action="pin-back">Cambiar departamento</button>
+            <p id="pin-greeting" class="pin-greeting"></p>
+            <div id="pin-dots" class="pin-dots" aria-label="Cuatro dígitos del PIN"></div>
+            <div id="keypad" class="keypad">
+              <button class="key" type="button" data-action="pin-key" data-id="1">1</button>
+              <button class="key" type="button" data-action="pin-key" data-id="2">2</button>
+              <button class="key" type="button" data-action="pin-key" data-id="3">3</button>
+              <button class="key" type="button" data-action="pin-key" data-id="4">4</button>
+              <button class="key" type="button" data-action="pin-key" data-id="5">5</button>
+              <button class="key" type="button" data-action="pin-key" data-id="6">6</button>
+              <button class="key" type="button" data-action="pin-key" data-id="7">7</button>
+              <button class="key" type="button" data-action="pin-key" data-id="8">8</button>
+              <button class="key" type="button" data-action="pin-key" data-id="9">9</button>
+              <button class="key key-secondary" type="button" data-action="pin-key" data-id="clear">Borrar</button>
+              <button class="key" type="button" data-action="pin-key" data-id="0">0</button>
+              <button class="key key-primary" type="button" data-action="pin-key" data-id="enter">Entrar</button>
+            </div>
+            <p id="pin-error" class="error-text hidden" role="alert"></p>
+            <p class="demo-hint">PIN de demostración: 1234</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-board" class="screen">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Comunicados del edificio</p>
+            <h1 class="screen-title">Pizarra</h1>
+          </div>
+          <button id="add-announcement" class="btn btn-primary btn-square hidden" type="button" data-action="new-announcement" aria-label="Nuevo anuncio">+</button>
+        </div>
+        <div id="board-filters" class="filter-row">
+          <button class="chip active" type="button" data-action="board-filter" data-id="Todas">Todas</button>
+          <button class="chip" type="button" data-action="board-filter" data-id="Urgente">Urgente</button>
+          <button class="chip" type="button" data-action="board-filter" data-id="Mantenimiento">Mantenimiento</button>
+          <button class="chip" type="button" data-action="board-filter" data-id="Avisos Generales">Avisos Generales</button>
+          <button class="chip" type="button" data-action="board-filter" data-id="Acuerdos">Acuerdos</button>
+        </div>
+        <main id="announcement-list" class="card-list"></main>
+        <div id="empty-announcements" class="empty-state hidden">
+          <span class="empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="17" rx="2" /><path d="M8 9h8M8 13h8M8 17h5" /></svg>
+          </span>
+          <strong>No hay anuncios</strong>
+          <p class="muted">No hay publicaciones en esta categoría.</p>
+        </div>
+      </section>
+
+      <section id="screen-chores" class="screen">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Tareas compartidas</p>
+            <h1 class="screen-title">Tareas</h1>
+          </div>
+          <button id="add-chore" class="btn btn-primary btn-square hidden" type="button" data-action="new-chore" aria-label="Nueva tarea">+</button>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-card summary-card--danger">
+            <span>Atrasadas</span>
+            <strong id="chore-overdue">0</strong>
+          </div>
+          <div class="summary-card summary-card--warn">
+            <span>Por vencer</span>
+            <strong id="chore-soon">0</strong>
+          </div>
+        </div>
+        <div id="chore-filters" class="filter-row">
+          <button class="chip active" type="button" data-action="chore-filter" data-id="all">Todas</button>
+          <button class="chip" type="button" data-action="chore-filter" data-id="pending">Pendientes</button>
+          <button class="chip" type="button" data-action="chore-filter" data-id="mine">Mías</button>
+          <button class="chip" type="button" data-action="chore-filter" data-id="completed">Completadas</button>
+        </div>
+        <main id="chore-list" class="card-list"></main>
+        <div id="empty-chores" class="empty-state hidden">
+          <span class="empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3" /><path d="M8 12l2.5 2.5L16 9" /></svg>
+          </span>
+          <strong>Todo al día</strong>
+          <p class="muted">No hay tareas en este filtro.</p>
+        </div>
+      </section>
+
+      <section id="screen-finance" class="screen">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Transparencia del edificio</p>
+            <h1 class="screen-title">Gastos</h1>
+          </div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span>Saldo actual</span>
+            <strong id="stat-balance">—</strong>
+          </div>
+          <div class="stat-card">
+            <span>Recaudado mes</span>
+            <strong id="stat-collected">—</strong>
+          </div>
+          <div class="stat-card">
+            <span>Gastado mes</span>
+            <strong id="stat-spent">—</strong>
+          </div>
+          <p id="summary-pending" class="summary-note hidden"></p>
+        </div>
+        <div id="finance-tabs" class="tabs">
+          <button class="tab active" type="button" data-action="finance-tab" data-id="expenses">Egresos</button>
+          <button class="tab" type="button" data-action="finance-tab" data-id="contributions">Aportaciones</button>
+        </div>
+        <div class="panel-head">
+          <p class="muted">Registros de la administración vecinal</p>
+          <button id="add-expense" class="btn btn-primary btn-small hidden" type="button" data-action="new-expense">Registrar gasto</button>
+          <button id="add-contribution" class="btn btn-primary btn-small hidden" type="button" data-action="new-contribution">Registrar aportación</button>
+        </div>
+        <div id="panel-expenses">
+          <main id="expense-list" class="card-list"></main>
+          <div id="empty-expenses" class="empty-state hidden">
+            <span class="empty-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16l-3-2-4 2-4-2-3 2z" /><path d="M9 9h6M9 13h4" /></svg>
+            </span>
+            <strong>Sin egresos</strong>
+            <p class="muted">Todavía no se registran gastos.</p>
+          </div>
+        </div>
+        <div id="panel-contributions" class="hidden">
+          <main id="contribution-list" class="card-list"></main>
+          <div id="empty-contributions" class="empty-state hidden">
+            <span class="empty-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M16 7a4 4 0 0 0-4-2c-2 0-3 1-3 2.5S10 10 12 10s4 1.5 4 3.5S14 16 12 16a4 4 0 0 1-4-2" /></svg>
+            </span>
+            <strong>Sin aportaciones</strong>
+            <p class="muted">Todavía no se registran aportaciones.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="screen-neighbors" class="screen">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Comunidad de la torre</p>
+            <h1 class="screen-title">Vecinos</h1>
+          </div>
+        </div>
+        <div id="neighbors-tabs" class="tabs">
+          <button class="tab active" type="button" data-action="neighbors-tab" data-id="directory">Directorio</button>
+          <button class="tab" type="button" data-action="neighbors-tab" data-id="parking">Estacionamientos</button>
+        </div>
+        <div id="panel-directory">
+          <main id="resident-list" class="card-list"></main>
+          <div id="empty-residents" class="empty-state hidden">
+            <span class="empty-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3" /><path d="M3 20a6 6 0 0 1 12 0M16 5a3 3 0 0 1 0 6M18 14a6 6 0 0 1 3 6" /></svg>
+            </span>
+            <strong>Sin vecinos</strong>
+            <p class="muted">No hay residentes registrados.</p>
+          </div>
+        </div>
+        <div id="panel-parking" class="hidden">
+          <div class="panel-head">
+            <p class="muted">Lugares y préstamos entre vecinos</p>
+            <button id="add-parking" class="btn btn-primary btn-small hidden" type="button" data-action="new-parking">Registrar lugar</button>
+          </div>
+          <div id="parking-filters" class="filter-row">
+            <button class="chip active" type="button" data-action="parking-filter" data-id="all">Todos</button>
+            <button class="chip" type="button" data-action="parking-filter" data-id="Disponible">Disponibles</button>
+            <button class="chip" type="button" data-action="parking-filter" data-id="Prestado">Prestados</button>
+            <button class="chip" type="button" data-action="parking-filter" data-id="Solicitado">Solicitados</button>
+          </div>
+          <main id="parking-list" class="card-list"></main>
+          <div id="empty-parking" class="empty-state hidden">
+            <span class="empty-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3" /><path d="M9 16V8h3.5a2.5 2.5 0 0 1 0 5H9" /></svg>
+            </span>
+            <strong>Sin lugares</strong>
+            <p class="muted">No hay estacionamientos en este filtro.</p>
+          </div>
+        </div>
+      </section>
+
+      <nav id="bottom-nav" class="bottom-nav hidden" aria-label="Navegación principal">
+        <button class="nav-item active" type="button" data-action="nav" data-id="board">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="17" rx="2" /><path d="M8 3h8v4H8zM8 12h8M8 16h5" /></svg>
+          <span>Pizarra</span>
+        </button>
+        <button class="nav-item" type="button" data-action="nav" data-id="chores">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M8 12l2.5 2.5L16 9" /></svg>
+          <span>Tareas</span>
+        </button>
+        <button class="nav-item" type="button" data-action="nav" data-id="finance">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h15a3 3 0 0 1 3 3v7a3 3 0 0 1-3 3H5a2 2 0 0 1-2-2z" /><path d="M3 7V6a2 2 0 0 1 2-2h13" /><circle cx="16" cy="13" r="1.2" /></svg>
+          <span>Gastos</span>
+        </button>
+        <button class="nav-item" type="button" data-action="nav" data-id="neighbors">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3" /><path d="M3 20a6 6 0 0 1 12 0M16 5a3 3 0 0 1 0 6M18 14a6 6 0 0 1 3 6" /></svg>
+          <span>Vecinos</span>
+        </button>
+      </nav>
+    </div>
+
+    <div id="announcement-sheet" class="sheet-backdrop" data-action="close-sheet" data-id="announcement-sheet">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <h2 id="announcement-sheet-title" class="sheet-title">Nuevo anuncio</h2>
+        <form class="form" data-form="announcement">
+          <label class="field">
+            <span class="label">Título</span>
+            <input class="input" name="title" maxlength="140" required placeholder="Ej. Reunión vecinal" />
+          </label>
+          <label class="field">
+            <span class="label">Mensaje</span>
+            <textarea class="input textarea" name="body" rows="5" maxlength="4000" required placeholder="Escribe el aviso para todos los vecinos"></textarea>
+          </label>
+          <label class="field">
+            <span class="label">Categoría</span>
+            <select class="select" name="category">
+              <option value="Avisos Generales">Avisos Generales</option>
+              <option value="Urgente">Urgente</option>
+              <option value="Mantenimiento">Mantenimiento</option>
+              <option value="Acuerdos">Acuerdos</option>
+            </select>
+          </label>
+          <label id="pin-field" class="check-field">
+            <input type="checkbox" name="is_pinned" />
+            <span>Fijar arriba de la pizarra</span>
+          </label>
+          <div class="form-actions">
+            <button class="btn btn-ghost" type="button" data-action="close-sheet" data-id="announcement-sheet">Cancelar</button>
+            <button id="announcement-submit" class="btn btn-primary" type="submit">Publicar anuncio</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="chore-sheet" class="sheet-backdrop" data-action="close-sheet" data-id="chore-sheet">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <h2 id="chore-sheet-title" class="sheet-title">Nueva tarea</h2>
+        <form class="form" data-form="chore">
+          <label class="field">
+            <span class="label">Título</span>
+            <input class="input" name="title" maxlength="140" required placeholder="Ej. Limpiar escaleras" />
+          </label>
+          <label class="field">
+            <span class="label">Descripción</span>
+            <textarea class="input textarea" name="description" rows="3" maxlength="2000" placeholder="Detalles de la tarea"></textarea>
+          </label>
+          <div class="form-row">
+            <label class="field">
+              <span class="label">Área</span>
+              <select class="select" name="area">
+                <option value="Escaleras">Escaleras</option>
+                <option value="Pasillos">Pasillos</option>
+                <option value="Área de basura">Área de basura</option>
+                <option value="Tinacos">Tinacos</option>
+                <option value="Cisterna">Cisterna</option>
+                <option value="Jardín">Jardín</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="label">Frecuencia</span>
+              <select class="select" name="frequency">
+                <option value="Única">Única</option>
+                <option value="Semanal">Semanal</option>
+                <option value="Mensual">Mensual</option>
+              </select>
+            </label>
+          </div>
+          <div class="form-row">
+            <label class="field">
+              <span class="label">Vencimiento</span>
+              <input class="input" name="due_date" type="date" />
+            </label>
+            <label class="field">
+              <span class="label">Responsable</span>
+              <select class="select" name="assigned_to" id="chore-assignee"></select>
+            </label>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-ghost" type="button" data-action="close-sheet" data-id="chore-sheet">Cancelar</button>
+            <button id="chore-submit" class="btn btn-primary" type="submit">Guardar tarea</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="complete-sheet" class="sheet-backdrop" data-action="close-sheet" data-id="complete-sheet">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <h2 class="sheet-title">Completar tarea</h2>
+        <p id="complete-chore-name" class="sheet-description"></p>
+        <form class="form" data-form="complete">
+          <label class="field">
+            <span class="label">Foto de evidencia</span>
+            <input class="input" name="evidence" type="file" accept="image/*" />
+            <span class="field-hint">La foto se ajusta y comprime antes de enviarse.</span>
+          </label>
+          <div class="form-actions">
+            <button class="btn btn-ghost" type="button" data-action="close-sheet" data-id="complete-sheet">Cancelar</button>
+            <button class="btn btn-primary" type="submit">Marcar completada</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="expense-sheet" class="sheet-backdrop" data-action="close-sheet" data-id="expense-sheet">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <h2 id="expense-sheet-title" class="sheet-title">Registrar gasto</h2>
+        <form class="form" data-form="expense">
+          <label class="field">
+            <span class="label">Título</span>
+            <input class="input" name="title" maxlength="140" required placeholder="Ej. Cambio de focos" />
+          </label>
+          <div class="form-row">
+            <label class="field">
+              <span class="label">Categoría</span>
+              <select class="select" name="category">
+                <option value="Limpieza">Limpieza</option>
+                <option value="Reparación">Reparación</option>
+                <option value="Luz">Luz</option>
+                <option value="Agua">Agua</option>
+                <option value="Seguridad">Seguridad</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </label>
+            <label class="field">
+              <span class="label">Monto</span>
+              <input class="input" name="amount" type="number" min="0.01" step="0.01" required placeholder="0.00" />
+            </label>
+          </div>
+          <label class="field">
+            <span class="label">Fecha del gasto</span>
+            <input class="input" name="spent_on" type="date" required />
+          </label>
+          <label class="field">
+            <span class="label">Foto del ticket</span>
+            <input class="input" name="receipt" type="file" accept="image/*" />
+          </label>
+          <div class="form-actions">
+            <button class="btn btn-ghost" type="button" data-action="close-sheet" data-id="expense-sheet">Cancelar</button>
+            <button id="expense-submit" class="btn btn-primary" type="submit">Guardar gasto</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="contribution-sheet" class="sheet-backdrop" data-action="close-sheet" data-id="contribution-sheet">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <h2 class="sheet-title">Registrar aportación</h2>
+        <form class="form" data-form="contribution">
+          <label class="field">
+            <span class="label">Tipo</span>
+            <select class="select" name="kind">
+              <option value="Cuota mensual">Cuota mensual</option>
+              <option value="Cooperación extraordinaria">Cooperación extraordinaria</option>
+            </select>
+          </label>
+          <div class="form-row">
+            <label class="field">
+              <span class="label">Periodo</span>
+              <input class="input" name="period" type="month" required />
+            </label>
+            <label class="field">
+              <span class="label">Monto</span>
+              <input class="input" name="amount" type="number" min="0.01" step="0.01" required placeholder="0.00" />
+            </label>
+          </div>
+          <label class="field">
+            <span class="label">Foto del comprobante</span>
+            <input class="input" name="proof" type="file" accept="image/*" />
+          </label>
+          <div class="form-actions">
+            <button class="btn btn-ghost" type="button" data-action="close-sheet" data-id="contribution-sheet">Cancelar</button>
+            <button class="btn btn-primary" type="submit">Registrar aportación</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="resident-sheet" class="sheet-backdrop" data-action="close-sheet" data-id="resident-sheet">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <h2 class="sheet-title">Editar contacto</h2>
+        <p id="resident-sheet-name" class="sheet-description"></p>
+        <form class="form" data-form="resident">
+          <label class="field">
+            <span class="label">Teléfono</span>
+            <input class="input" name="phone" maxlength="40" placeholder="Ej. 55 1234 5678" />
+          </label>
+          <label class="field">
+            <span class="label">Contacto de emergencia</span>
+            <input class="input" name="emergency_name" maxlength="80" placeholder="Nombre completo" />
+          </label>
+          <label class="field">
+            <span class="label">Teléfono de emergencia</span>
+            <input class="input" name="emergency_phone" maxlength="40" placeholder="Ej. 55 8765 4321" />
+          </label>
+          <div class="form-actions">
+            <button class="btn btn-ghost" type="button" data-action="close-sheet" data-id="resident-sheet">Cancelar</button>
+            <button class="btn btn-primary" type="submit">Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="parking-sheet" class="sheet-backdrop" data-action="close-sheet" data-id="parking-sheet">
+      <div class="sheet">
+        <div class="sheet-handle"></div>
+        <h2 id="parking-sheet-title" class="sheet-title">Registrar lugar</h2>
+        <form class="form" data-form="parking">
+          <div class="form-row">
+            <label class="field">
+              <span class="label">Código</span>
+              <input class="input" name="code" maxlength="24" required placeholder="Ej. A1" />
+            </label>
+            <label class="field">
+              <span class="label">Tipo</span>
+              <select class="select" name="spot_type">
+                <option value="Cubo">Cubo</option>
+                <option value="Descubierto">Descubierto</option>
+              </select>
+            </label>
+          </div>
+          <label class="field">
+            <span class="label">Ubicación</span>
+            <input class="input" name="location" maxlength="120" required placeholder="Ej. Planta baja, frente al elevador" />
+          </label>
+          <div class="form-row">
+            <label class="field">
+              <span class="label">Dueño</span>
+              <select class="select" name="owner_id" id="parking-owner"></select>
+            </label>
+            <label class="field">
+              <span class="label">Préstamo hasta</span>
+              <input class="input" name="loan_until" type="date" />
+            </label>
+          </div>
+          <label class="field">
+            <span class="label">Nota</span>
+            <input class="input" name="note" maxlength="240" placeholder="Información adicional" />
+          </label>
+          <div class="form-actions">
+            <button class="btn btn-ghost" type="button" data-action="close-sheet" data-id="parking-sheet">Cancelar</button>
+            <button id="parking-submit" class="btn btn-primary" type="submit">Guardar lugar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div id="confirm-modal" class="modal">
+      <div class="modal-card">
+        <h2 id="confirm-title" class="modal-title">¿Confirmar eliminación?</h2>
+        <p id="confirm-desc" class="muted">Esta acción no se puede deshacer.</p>
+        <div class="form-actions">
+          <button class="btn btn-ghost" type="button" data-action="confirm-cancel">Cancelar</button>
+          <button class="btn btn-danger" type="button" data-action="confirm-accept">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="/js/app.js?v=2" defer></script>
+  </body>
+</html>
