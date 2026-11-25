@@ -1,4 +1,4 @@
-APP_NAME=Torre Control
+APP_NAME=Torre 40
 DATABASE_URL=postgresql+psycopg://postgres.TU_REF:TU_PASSWORD@aws-1-us-east-1.pooler.supabase.com:6543/postgres?sslmode=require
 SESSION_SECRET=TU_SECRETO_GENERADO_CON_SECRETS_TOKEN_URLSAFE
 SESSION_COOKIE_NAME=torre_session

@@ -227,6 +227,7 @@ function updateActionButtons() {
   document.getElementById("add-expense").classList.toggle("hidden", !(committee && state.financeTab === "expenses"));
   document.getElementById("add-contribution").classList.toggle("hidden", state.financeTab !== "contributions");
   document.getElementById("add-parking").classList.toggle("hidden", !(committee && state.neighborsTab === "parking"));
+  document.getElementById("add-resident").classList.toggle("hidden", !(committee && state.neighborsTab === "directory"));
 }
 
 function handleUnauthorized() {
@@ -629,7 +630,7 @@ function residentCard(resident) {
   let actions = "";
   if (isCommittee()) {
     actions = '<div class="card__actions">' +
-      '<button class="btn btn-small" type="button" data-action="edit-resident" data-id="' + escapeHtml(resident.id) + '">Editar contacto</button>' +
+      '<button class="btn btn-small" type="button" data-action="edit-resident" data-id="' + escapeHtml(resident.id) + '">Editar departamento</button>' +
       "</div>";
   }
   return '<article class="card">' +
@@ -812,15 +813,28 @@ function openContributionSheet() {
 }
 
 function openResidentSheet(id) {
-  const resident = state.residents.find(function (item) { return item.id === id; });
-  if (!resident) return;
+  const resident = id ? state.residents.find(function (item) { return item.id === id; }) : null;
+  if (id && !resident) return;
   const form = document.querySelector('[data-form="resident"]');
   form.reset();
-  state.editing.residentId = id;
-  document.getElementById("resident-sheet-name").textContent = "Depto " + resident.dept_number + " · " + resident.name;
-  form.elements["phone"].value = resident.phone || "";
-  form.elements["emergency_name"].value = resident.emergency_name || "";
-  form.elements["emergency_phone"].value = resident.emergency_phone || "";
+  state.editing.residentId = resident ? resident.id : null;
+  document.getElementById("resident-sheet-title").textContent = resident ? "Editar departamento" : "Nuevo departamento";
+  document.getElementById("resident-sheet-name").textContent = resident
+    ? "Depto " + resident.dept_number + " · " + resident.name
+    : "Crea un departamento y asígnale un PIN de acceso.";
+  document.getElementById("resident-submit").textContent = resident ? "Guardar cambios" : "Guardar departamento";
+  if (resident) {
+    form.elements["dept_number"].value = resident.dept_number;
+    form.elements["name"].value = resident.name;
+    form.elements["role"].value = resident.role;
+    form.elements["pin"].placeholder = "Dejar en blanco para no cambiar";
+    form.elements["phone"].value = resident.phone || "";
+    form.elements["emergency_name"].value = resident.emergency_name || "";
+    form.elements["emergency_phone"].value = resident.emergency_phone || "";
+  } else {
+    form.elements["role"].value = "resident";
+    form.elements["pin"].placeholder = "Mínimo 4 caracteres";
+  }
   openSheet("resident-sheet");
 }
 
@@ -998,16 +1012,30 @@ async function saveContribution(form) {
 
 async function saveResident(form) {
   const id = state.editing.residentId;
+  const pin = formText(form, "pin");
+  const deptNumber = Number(formText(form, "dept_number"));
+  const name = formText(form, "name");
+  if (!deptNumber || !name || (!id && !pin)) {
+    showToast("Completa departamento, nombre y PIN");
+    return;
+  }
   const payload = {
+    dept_number: deptNumber,
+    name: name,
+    role: form.elements["role"].value,
     phone: formText(form, "phone") || null,
     emergency_name: formText(form, "emergency_name") || null,
     emergency_phone: formText(form, "emergency_phone") || null
   };
-  await api("/api/residents/" + id, { method: "PATCH", body: payload });
+  if (pin) payload.pin = pin;
+  await api(id ? "/api/residents/" + id : "/api/residents", {
+    method: id ? "PATCH" : "POST",
+    body: payload
+  });
   closeSheet("resident-sheet");
-  showToast("Contacto actualizado");
+  showToast(id ? "Departamento actualizado" : "Departamento creado");
   clearApiCache();
-  await loadResidents();
+  await Promise.all([loadResidents(), loadProfiles()]);
 }
 
 async function saveParking(form) {
@@ -1269,6 +1297,9 @@ async function handleClick(event) {
       break;
     case "review-contribution":
       reviewContribution(Number(id), target.dataset.review);
+      break;
+    case "new-resident":
+      openResidentSheet(null);
       break;
     case "edit-resident":
       openResidentSheet(Number(id));

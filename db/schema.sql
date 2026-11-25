@@ -145,7 +145,7 @@ VALUES
     (3, 'Mantenimiento de elevadores', 'El viernes 27 de noviembre, de 10:00 a 14:00, se realizará la revisión mensual de los elevadores. Habrá un técnico en el vestíbulo para atender cualquier duda.', 'Mantenimiento', false, 1, TIMESTAMPTZ '2026-11-23 11:30:00-06', TIMESTAMPTZ '2026-11-23 11:30:00-06'),
     (4, 'Limpieza de tinacos', 'El sábado 28 se limpiarán los tinacos de los niveles 2 y 3. El acceso a las azoteas estará restringido durante la mañana; avisen si dejaron objetos personales en esas áreas.', 'Mantenimiento', false, 1, TIMESTAMPTZ '2026-11-22 16:10:00-06', TIMESTAMPTZ '2026-11-22 16:10:00-06'),
     (5, 'Acuerdo de asamblea: horario de basura', 'Por unanimidad se acordó depositar la basura en el área designada de 19:00 a 21:00, de lunes a domingo. Se colocará un letrero junto a los contenedores para recordar el horario.', 'Acuerdos', false, 1, TIMESTAMPTZ '2026-11-20 12:00:00-06', TIMESTAMPTZ '2026-11-20 12:00:00-06'),
-    (6, 'Reunión de vecinos de Torre Roble', 'Convocamos a todos los departamentos a la reunión del domingo 29 de noviembre a las 10:00 en el salón comunal. Trataremos el presupuesto de diciembre y el uso de los estacionamientos.', 'Avisos Generales', false, 1, TIMESTAMPTZ '2026-11-18 17:45:00-06', TIMESTAMPTZ '2026-11-18 17:45:00-06')
+    (6, 'Reunión de vecinos de Torre 40', 'Convocamos a todos los departamentos a la reunión del domingo 29 de noviembre a las 10:00 en el salón comunal. Trataremos el presupuesto de diciembre y el uso de los estacionamientos.', 'Avisos Generales', false, 1, TIMESTAMPTZ '2026-11-18 17:45:00-06', TIMESTAMPTZ '2026-11-18 17:45:00-06')
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO torre_announcement_reads (id, announcement_id, resident_id, read_at)

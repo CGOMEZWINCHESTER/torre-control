@@ -1,7 +1,7 @@
 {
-  "name": "Torre Roble · Control vecinal",
-  "short_name": "Torre Roble",
-  "description": "Pizarra, tareas, gastos y vecinos de Torre Roble en un solo lugar.",
+  "name": "Torre 40 · Control vecinal",
+  "short_name": "Torre 40",
+  "description": "Pizarra, tareas, gastos y vecinos de Torre 40 en un solo lugar.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

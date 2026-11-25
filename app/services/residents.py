@@ -7,6 +7,23 @@ from ..models import Contribution, Resident
 from ..schemas import ResidentOut
 
 MONTHLY_FEE = 850.0
+AVATAR_COLORS = (
+    "#b45309",
+    "#2563eb",
+    "#db2777",
+    "#059669",
+    "#7c3aed",
+    "#dc2626",
+    "#0891b2",
+    "#ea580c",
+    "#4f46e5",
+    "#65a30d",
+)
+
+
+def avatar_for(name: str, dept_number: int) -> tuple[str, str]:
+    initials = "".join(part[0] for part in name.split()[:2] if part).upper()[:2]
+    return AVATAR_COLORS[dept_number % len(AVATAR_COLORS)], initials or "🏠"
 
 
 def current_period() -> str:

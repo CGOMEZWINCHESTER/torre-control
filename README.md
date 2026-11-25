@@ -1,6 +1,6 @@
-# Torre Control
+# Torre 40
 
-PWA para la administración de "Torre Roble": tablón de anuncios, tareas de limpieza y mantenimiento, finanzas (egresos y aportaciones) y gestión de estacionamientos. Cada departamento entra con su número y un PIN de demostración.
+PWA para la administración de "Torre 40": tablón de anuncios, tareas de limpieza y mantenimiento, finanzas (egresos y aportaciones) y gestión de estacionamientos. Cada departamento entra con su número y un PIN de demostración.
 
 ## Stack
 
@@ -59,6 +59,8 @@ Detalles del seed:
 - Se añadió la columna `torre_chores.next_chore_id` porque el backend la usa al generar la siguiente tarea recurrente; no estaba en la lista resumida del contrato.
 - Con los datos de noviembre 2026, los deptos `302` (sin cuota aprobada) y `303` (cooperación de $500.00) quedan "Con adeudo"; el depto `305` se pone al corriente con una cooperación de $1,000.00.
 
+Si la base ya tiene el seed anterior, ejecuta `db/migrations/002_rename_torre_40.sql` en el SQL Editor de Supabase para cambiar el texto "Torre Roble" a "Torre 40" en los anuncios.
+
 ## Puesta en marcha local
 
 ```bash
@@ -112,7 +114,8 @@ El estado se calcula en `app/services/residents.py` sumando aportaciones aprobad
 - Crear, editar y eliminar tareas; cerrarlas o reabrirlas.
 - Aprobar o rechazar aportaciones.
 - Registrar, editar y eliminar egresos.
-- Administrar lugares de estacionamiento y datos de contacto de residentes.
+- Crear y editar departamentos, asignar PIN y rol, y actualizar datos de contacto.
+- Administrar lugares de estacionamiento.
 
 `resident`:
 
@@ -159,7 +162,7 @@ El estado se calcula en `app/services/residents.py` sumando aportaciones aprobad
 - FastAPI monta `static/` en `/`; el service worker y el manifest están en esa carpeta.
 - El service worker usa caché para el shell y para respuestas `GET /api/...`, separando por cabecera `X-User-Id`. Al cambiar de perfil conviene limpiar la caché de la API.
 - El registro del service worker requiere HTTPS o `localhost`; en producción `SECURE_COOKIES=true`.
-- El manifest se llama "Torre Roble · Control vecinal" y el service worker usa las cachés `torre-shell-v2` y `torre-api-v2`.
+- El manifest se llama "Torre 40 · Control vecinal" y el service worker usa las cachés `torre-shell-v3` y `torre-api-v3`.
 
 ## Comandos de validación
 

@@ -56,11 +56,24 @@ class PINLogin(BaseModel):
     pin: str = Field(min_length=1, max_length=72)
 
 
+class ResidentCreate(BaseModel):
+    dept_number: int = Field(gt=0)
+    name: str = Field(min_length=1, max_length=60)
+    role: Role = "resident"
+    pin: str = Field(min_length=4, max_length=72)
+    phone: str | None = Field(default=None, max_length=32)
+    emergency_name: str | None = Field(default=None, max_length=60)
+    emergency_phone: str | None = Field(default=None, max_length=32)
+
+
 class ResidentUpdate(BaseModel):
-    phone: str | None = None
-    emergency_name: str | None = None
-    emergency_phone: str | None = None
+    dept_number: int | None = Field(default=None, gt=0)
+    name: str | None = Field(default=None, min_length=1, max_length=60)
     role: Role | None = None
+    pin: str | None = Field(default=None, min_length=4, max_length=72)
+    phone: str | None = Field(default=None, max_length=32)
+    emergency_name: str | None = Field(default=None, max_length=60)
+    emergency_phone: str | None = Field(default=None, max_length=32)
 
 
 class CommentCreate(BaseModel):

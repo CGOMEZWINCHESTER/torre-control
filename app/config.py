@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    app_name: str = "Torre Control"
+    app_name: str = "Torre 40"
     database_url: str = "postgresql+psycopg://postgres:postgres@localhost:5432/torre_control"
     session_secret: str = "cambia-esta-clave-en-produccion"
     session_cookie_name: str = "torre_session"

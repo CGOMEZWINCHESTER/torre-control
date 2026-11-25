@@ -4,15 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#0f172a" />
-    <meta name="description" content="Control vecinal de Torre Roble: pizarra, tareas, gastos y vecinos." />
+    <meta name="description" content="Control vecinal de Torre 40: pizarra, tareas, gastos y vecinos." />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="Torre Roble" />
-    <title>Torre Roble · Control vecinal</title>
+    <meta name="apple-mobile-web-app-title" content="Torre 40" />
+    <title>Torre 40 · Control vecinal</title>
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
     <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
-    <link rel="stylesheet" href="/css/styles.css?v=2" />
+    <link rel="stylesheet" href="/css/styles.css?v=3" />
   </head>
   <body>
     <div class="app">
@@ -25,7 +25,7 @@
             </svg>
           </span>
           <span class="brand-copy">
-            <strong>Torre Roble</strong>
+            <strong>Torre 40</strong>
             <small>Control vecinal</small>
           </span>
         </div>
@@ -47,7 +47,7 @@
               <path d="M10 11h1M13 11h1M10 15h1M13 15h1M11 21v-3h2v3" />
             </svg>
           </span>
-          <h1 class="login-title">Torre Roble</h1>
+          <h1 class="login-title">Torre 40</h1>
           <p class="login-subtitle">Control vecinal</p>
           <p class="muted login-help">Elige tu departamento para continuar</p>
           <div id="profile-grid" class="profile-grid"></div>
@@ -193,6 +193,7 @@
             <p class="eyebrow">Comunidad de la torre</p>
             <h1 class="screen-title">Vecinos</h1>
           </div>
+          <button id="add-resident" class="btn btn-primary btn-square hidden" type="button" data-action="new-resident" aria-label="Nuevo departamento">+</button>
         </div>
         <div id="neighbors-tabs" class="tabs">
           <button class="tab active" type="button" data-action="neighbors-tab" data-id="directory">Directorio</button>
@@ -435,24 +436,45 @@
     <div id="resident-sheet" class="sheet-backdrop" data-action="close-sheet" data-id="resident-sheet">
       <div class="sheet">
         <div class="sheet-handle"></div>
-        <h2 class="sheet-title">Editar contacto</h2>
+        <h2 id="resident-sheet-title" class="sheet-title">Nuevo departamento</h2>
         <p id="resident-sheet-name" class="sheet-description"></p>
         <form class="form" data-form="resident">
+          <div class="form-row">
+            <label class="field">
+              <span class="label">Número de departamento</span>
+              <input class="input" name="dept_number" type="number" min="1" max="9999" inputmode="numeric" placeholder="Ej. 401" />
+            </label>
+            <label class="field">
+              <span class="label">Rol</span>
+              <select class="select" name="role">
+                <option value="resident">Vecino</option>
+                <option value="committee">Comité</option>
+              </select>
+            </label>
+          </div>
+          <label class="field">
+            <span class="label">Nombre del residente</span>
+            <input class="input" name="name" maxlength="60" placeholder="Nombre completo" />
+          </label>
+          <label class="field">
+            <span class="label">PIN de acceso</span>
+            <input class="input" name="pin" inputmode="numeric" maxlength="72" placeholder="Mínimo 4 caracteres" />
+          </label>
           <label class="field">
             <span class="label">Teléfono</span>
-            <input class="input" name="phone" maxlength="40" placeholder="Ej. 55 1234 5678" />
+            <input class="input" name="phone" maxlength="32" placeholder="Ej. 55 1234 5678" />
           </label>
           <label class="field">
             <span class="label">Contacto de emergencia</span>
-            <input class="input" name="emergency_name" maxlength="80" placeholder="Nombre completo" />
+            <input class="input" name="emergency_name" maxlength="60" placeholder="Nombre completo" />
           </label>
           <label class="field">
             <span class="label">Teléfono de emergencia</span>
-            <input class="input" name="emergency_phone" maxlength="40" placeholder="Ej. 55 8765 4321" />
+            <input class="input" name="emergency_phone" maxlength="32" placeholder="Ej. 55 8765 4321" />
           </label>
           <div class="form-actions">
             <button class="btn btn-ghost" type="button" data-action="close-sheet" data-id="resident-sheet">Cancelar</button>
-            <button class="btn btn-primary" type="submit">Guardar cambios</button>
+            <button id="resident-submit" class="btn btn-primary" type="submit">Guardar departamento</button>
           </div>
         </form>
       </div>
@@ -515,6 +537,6 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script src="/js/app.js?v=2" defer></script>
+    <script src="/js/app.js?v=3" defer></script>
   </body>
 </html>
