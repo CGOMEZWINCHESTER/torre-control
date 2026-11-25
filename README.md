@@ -38,25 +38,25 @@ torre-control/
 
 ## Base de datos
 
-`db/schema.sql` crea ocho tablas con `CREATE TABLE IF NOT EXISTS`, `CHECK`s, índices y datos de prueba en español (México):
+`db/schema.sql` crea ocho tablas con `CREATE TABLE IF NOT EXISTS`, `CHECK`s, índices y datos de prueba en español (México). Todas llevan el prefijo `torre_` para poder convivir con `hogar-tasks` en la misma base:
 
 | Tabla | Contenido del seed |
 | --- | --- |
-| `residents` | 10 departamentos, 1 `committee` y 9 `resident` |
-| `announcements` | 6 anuncios: 2 urgentes (uno fijado), 2 mantenimiento, 1 acuerdo y 1 aviso general |
-| `announcement_reads` | 24 lecturas repartidas entre anuncios y residentes |
-| `announcement_comments` | 4 comentarios realistas |
-| `chores` | 10 tareas: 2 atrasadas, 2 próximas a vencer y 4 completadas con evidencia |
-| `expenses` | 7 egresos de noviembre 2026, 5 con comprobante |
-| `contributions` | 8 cuotas (7 aprobadas, 1 pendiente, 1 rechazada) y 2 cooperaciones aprobadas |
-| `parking_spots` | 8 lugares `P-01` a `P-08` con dueños distintos |
+| `torre_residents` | 10 departamentos, 1 `committee` y 9 `resident` |
+| `torre_announcements` | 6 anuncios: 2 urgentes (uno fijado), 2 mantenimiento, 1 acuerdo y 1 aviso general |
+| `torre_announcement_reads` | 24 lecturas repartidas entre anuncios y residentes |
+| `torre_announcement_comments` | 4 comentarios realistas |
+| `torre_chores` | 10 tareas: 2 atrasadas, 2 próximas a vencer y 4 completadas con evidencia |
+| `torre_expenses` | 7 egresos de noviembre 2026, 5 con comprobante |
+| `torre_contributions` | 8 cuotas (7 aprobadas, 1 pendiente, 1 rechazada) y 2 cooperaciones aprobadas |
+| `torre_parking_spots` | 8 lugares `P-01` a `P-08` con dueños distintos |
 
 Detalles del seed:
 
 - El PIN de todos los residentes es `1234` y usa el mismo hash bcrypt: `$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K`.
 - Evidencias, comprobantes y recibos usan la misma data URL PNG válida de 1 píxel.
 - La lista del enunciado traía 9 números de departamento; se añadió el `305` para completar los 10.
-- Se añadió la columna `chores.next_chore_id` porque el backend la usa al generar la siguiente tarea recurrente; no estaba en la lista resumida del contrato.
+- Se añadió la columna `torre_chores.next_chore_id` porque el backend la usa al generar la siguiente tarea recurrente; no estaba en la lista resumida del contrato.
 - Con los datos de noviembre 2026, los deptos `302` (sin cuota aprobada) y `303` (cooperación de $500.00) quedan "Con adeudo"; el depto `305` se pone al corriente con una cooperación de $1,000.00.
 
 ## Puesta en marcha local
@@ -66,18 +66,17 @@ cp .env.example .env
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-createdb torre_control
-psql "postgresql://postgres:postgres@localhost:5432/torre_control" -v ON_ERROR_STOP=1 -f db/schema.sql
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f db/schema.sql
 uvicorn main:app --reload
 ```
 
 Abre `http://localhost:8000` para la PWA, `http://localhost:8000/docs` para Swagger y `GET /api/health` para el estado.
 
-Para reiniciar el demo, recrea la base de datos y vuelve a aplicar `db/schema.sql`. El script es idempotente y también puede ejecutarse dos veces seguidas.
+Para reiniciar el demo, elimina solo las tablas `torre_*` y vuelve a aplicar `db/schema.sql`. El script es idempotente y también puede ejecutarse dos veces seguidas sin tocar las tablas de `hogar-tasks`.
 
 ## Supabase y Vercel
 
-1. Crea un proyecto Supabase y copia la cadena de conexión del pooler (transaction, puerto `6543`) con `?sslmode=require`.
+1. Abre el mismo proyecto Supabase de `hogar-tasks` y copia la cadena de conexión del pooler (transaction, puerto `6543`) con `?sslmode=require`.
 2. Pégala en `DATABASE_URL` (usa `vercel-env.example.txt` como referencia). El driver debe ser `postgresql+psycopg://...`.
 3. Ejecuta todo `db/schema.sql` en el SQL Editor de Supabase (o `db/migrations/001_initial.sql`, que es idéntico).
 4. Genera el secreto de sesión con `python3 -c "import secrets; print(secrets.token_urlsafe(48))"` y ponlo en `SESSION_SECRET`.

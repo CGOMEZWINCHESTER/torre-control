@@ -18,10 +18,10 @@ from .database import Base
 
 
 class Resident(Base):
-    __tablename__ = "residents"
+    __tablename__ = "torre_residents"
     __table_args__ = (
-        Index("ix_model_residents_dept_number", "dept_number"),
-        Index("ix_model_residents_role", "role"),
+        Index("ix_torre_residents_dept_number", "dept_number"),
+        Index("ix_torre_residents_role", "role"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -87,11 +87,11 @@ class Resident(Base):
 
 
 class Announcement(Base):
-    __tablename__ = "announcements"
+    __tablename__ = "torre_announcements"
     __table_args__ = (
-        Index("ix_model_announcements_pinned", "is_pinned"),
-        Index("ix_model_announcements_created_at", "created_at"),
-        Index("ix_model_announcements_creator", "created_by"),
+        Index("ix_torre_announcements_pinned", "is_pinned"),
+        Index("ix_torre_announcements_created_at", "created_at"),
+        Index("ix_torre_announcements_creator", "created_by"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -100,7 +100,7 @@ class Announcement(Base):
     category: Mapped[str] = mapped_column(String(24), nullable=False, default="Avisos Generales")
     is_pinned: Mapped[bool] = mapped_column(nullable=False, default=False)
     created_by: Mapped[int] = mapped_column(
-        ForeignKey("residents.id", ondelete="RESTRICT"),
+        ForeignKey("torre_residents.id", ondelete="RESTRICT"),
         nullable=False,
     )
     created_at: Mapped[datetime] = mapped_column(
@@ -130,23 +130,23 @@ class Announcement(Base):
 
 
 class AnnouncementRead(Base):
-    __tablename__ = "announcement_reads"
+    __tablename__ = "torre_announcement_reads"
     __table_args__ = (
         UniqueConstraint(
             "announcement_id",
             "resident_id",
-            name="uq_announcement_reads_announcement_resident",
+            name="uq_torre_announcement_reads_announcement_resident",
         ),
-        Index("ix_model_announcement_reads_resident", "resident_id"),
+        Index("ix_torre_announcement_reads_resident", "resident_id"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     announcement_id: Mapped[int] = mapped_column(
-        ForeignKey("announcements.id", ondelete="CASCADE"),
+        ForeignKey("torre_announcements.id", ondelete="CASCADE"),
         nullable=False,
     )
     resident_id: Mapped[int] = mapped_column(
-        ForeignKey("residents.id", ondelete="CASCADE"),
+        ForeignKey("torre_residents.id", ondelete="CASCADE"),
         nullable=False,
     )
     read_at: Mapped[datetime] = mapped_column(
@@ -163,19 +163,19 @@ class AnnouncementRead(Base):
 
 
 class AnnouncementComment(Base):
-    __tablename__ = "announcement_comments"
+    __tablename__ = "torre_announcement_comments"
     __table_args__ = (
-        Index("ix_model_announcement_comments_announcement", "announcement_id"),
-        Index("ix_model_announcement_comments_resident", "resident_id"),
+        Index("ix_torre_announcement_comments_announcement", "announcement_id"),
+        Index("ix_torre_announcement_comments_resident", "resident_id"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     announcement_id: Mapped[int] = mapped_column(
-        ForeignKey("announcements.id", ondelete="CASCADE"),
+        ForeignKey("torre_announcements.id", ondelete="CASCADE"),
         nullable=False,
     )
     resident_id: Mapped[int] = mapped_column(
-        ForeignKey("residents.id", ondelete="RESTRICT"),
+        ForeignKey("torre_residents.id", ondelete="RESTRICT"),
         nullable=False,
     )
     body: Mapped[str] = mapped_column(Text, nullable=False)
@@ -193,12 +193,12 @@ class AnnouncementComment(Base):
 
 
 class Chore(Base):
-    __tablename__ = "chores"
+    __tablename__ = "torre_chores"
     __table_args__ = (
-        Index("ix_model_chores_completed", "is_completed"),
-        Index("ix_model_chores_due_date", "due_date"),
-        Index("ix_model_chores_assigned_to", "assigned_to"),
-        Index("ix_model_chores_created_at", "created_at"),
+        Index("ix_torre_chores_completed", "is_completed"),
+        Index("ix_torre_chores_due_date", "due_date"),
+        Index("ix_torre_chores_assigned_to", "assigned_to"),
+        Index("ix_torre_chores_created_at", "created_at"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -208,11 +208,11 @@ class Chore(Base):
     frequency: Mapped[str] = mapped_column(String(16), nullable=False, default="Única")
     due_date: Mapped[date | None] = mapped_column(Date, nullable=True)
     assigned_to: Mapped[int | None] = mapped_column(
-        ForeignKey("residents.id", ondelete="SET NULL"),
+        ForeignKey("torre_residents.id", ondelete="SET NULL"),
         nullable=True,
     )
     created_by: Mapped[int] = mapped_column(
-        ForeignKey("residents.id", ondelete="RESTRICT"),
+        ForeignKey("torre_residents.id", ondelete="RESTRICT"),
         nullable=False,
     )
     created_at: Mapped[datetime] = mapped_column(
@@ -223,7 +223,7 @@ class Chore(Base):
     is_completed: Mapped[bool] = mapped_column(nullable=False, default=False)
     completed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     completed_by: Mapped[int | None] = mapped_column(
-        ForeignKey("residents.id", ondelete="SET NULL"),
+        ForeignKey("torre_residents.id", ondelete="SET NULL"),
         nullable=True,
     )
     evidence_url: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -244,11 +244,11 @@ class Chore(Base):
 
 
 class Expense(Base):
-    __tablename__ = "expenses"
+    __tablename__ = "torre_expenses"
     __table_args__ = (
-        Index("ix_model_expenses_spent_on", "spent_on"),
-        Index("ix_model_expenses_creator", "created_by"),
-        Index("ix_model_expenses_created_at", "created_at"),
+        Index("ix_torre_expenses_spent_on", "spent_on"),
+        Index("ix_torre_expenses_creator", "created_by"),
+        Index("ix_torre_expenses_created_at", "created_at"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -258,7 +258,7 @@ class Expense(Base):
     spent_on: Mapped[date] = mapped_column(Date, nullable=False)
     receipt_url: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_by: Mapped[int] = mapped_column(
-        ForeignKey("residents.id", ondelete="RESTRICT"),
+        ForeignKey("torre_residents.id", ondelete="RESTRICT"),
         nullable=False,
     )
     created_at: Mapped[datetime] = mapped_column(
@@ -274,17 +274,17 @@ class Expense(Base):
 
 
 class Contribution(Base):
-    __tablename__ = "contributions"
+    __tablename__ = "torre_contributions"
     __table_args__ = (
-        Index("ix_model_contributions_resident", "resident_id"),
-        Index("ix_model_contributions_period", "period"),
-        Index("ix_model_contributions_status", "status"),
-        Index("ix_model_contributions_approved_by", "approved_by"),
+        Index("ix_torre_contributions_resident", "resident_id"),
+        Index("ix_torre_contributions_period", "period"),
+        Index("ix_torre_contributions_status", "status"),
+        Index("ix_torre_contributions_approved_by", "approved_by"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     resident_id: Mapped[int] = mapped_column(
-        ForeignKey("residents.id", ondelete="RESTRICT"),
+        ForeignKey("torre_residents.id", ondelete="RESTRICT"),
         nullable=False,
     )
     kind: Mapped[str] = mapped_column(String(32), nullable=False)
@@ -299,7 +299,7 @@ class Contribution(Base):
     )
     approved_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     approved_by: Mapped[int | None] = mapped_column(
-        ForeignKey("residents.id", ondelete="RESTRICT"),
+        ForeignKey("torre_residents.id", ondelete="RESTRICT"),
         nullable=True,
     )
 
@@ -314,11 +314,11 @@ class Contribution(Base):
 
 
 class ParkingSpot(Base):
-    __tablename__ = "parking_spots"
+    __tablename__ = "torre_parking_spots"
     __table_args__ = (
-        Index("ix_model_parking_spots_status", "status"),
-        Index("ix_model_parking_spots_owner", "owner_id"),
-        Index("ix_model_parking_spots_borrower", "borrower_id"),
+        Index("ix_torre_parking_spots_status", "status"),
+        Index("ix_torre_parking_spots_owner", "owner_id"),
+        Index("ix_torre_parking_spots_borrower", "borrower_id"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -327,11 +327,11 @@ class ParkingSpot(Base):
     spot_type: Mapped[str] = mapped_column(String(16), nullable=False, default="Cubo")
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="Disponible")
     owner_id: Mapped[int | None] = mapped_column(
-        ForeignKey("residents.id", ondelete="RESTRICT"),
+        ForeignKey("torre_residents.id", ondelete="RESTRICT"),
         nullable=True,
     )
     borrower_id: Mapped[int | None] = mapped_column(
-        ForeignKey("residents.id", ondelete="SET NULL"),
+        ForeignKey("torre_residents.id", ondelete="SET NULL"),
         nullable=True,
     )
     loan_until: Mapped[date | None] = mapped_column(Date, nullable=True)
