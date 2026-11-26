@@ -23,7 +23,7 @@ from ..services.residents import current_period, resident_out_map
 
 router = APIRouter(prefix="/api", tags=["finance"])
 
-OPENING_BALANCE = 12500.0
+OPENING_BALANCE = 0
 
 
 def _load_expense(expense_id: int, db: Session) -> Expense | None:

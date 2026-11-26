@@ -539,7 +539,6 @@ async function loadChores() {
 
 function renderSummary() {
   const summary = state.summary || {};
-  document.getElementById("stat-balance").textContent = money(summary.cash_balance);
   document.getElementById("stat-collected").textContent = money(summary.collected_this_month);
   document.getElementById("stat-spent").textContent = money(summary.spent_this_month);
   const pending = Number(summary.pending_reviews) || 0;
