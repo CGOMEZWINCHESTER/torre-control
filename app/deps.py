@@ -43,12 +43,12 @@ def require_roles(*allowed: Role):
     return dependency
 
 
-committee_only = require_roles("committee")
+admin_only = require_roles("admin")
 
 
 def can_manage_chore(user: Resident, chore: Chore) -> bool:
-    return user.role == "committee" or chore.assigned_to == user.id
+    return user.role == "admin" or chore.assigned_to == user.id
 
 
 def can_manage_parking(user: Resident, spot: ParkingSpot) -> bool:
-    return user.role == "committee" or spot.owner_id == user.id
+    return user.role == "admin" or spot.owner_id == user.id

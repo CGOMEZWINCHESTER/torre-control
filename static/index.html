@@ -12,7 +12,7 @@
     <link rel="manifest" href="/manifest.json" />
     <link rel="icon" type="image/svg+xml" href="/icons/icon-192.svg" />
     <link rel="apple-touch-icon" href="/icons/icon-192.svg" />
-    <link rel="stylesheet" href="/css/styles.css?v=4" />
+    <link rel="stylesheet" href="/css/styles.css?v=5" />
   </head>
   <body>
     <div class="app">
@@ -33,7 +33,7 @@
           <span class="user-chip">
             <span id="header-avatar" class="avatar-holder"></span>
             <span id="header-user" class="user-name"></span>
-            <span id="header-badge" class="badge badge--success hidden">Comité</span>
+            <span id="header-badge" class="badge badge--success hidden">Admin</span>
           </span>
           <button class="btn btn-ghost btn-compact" type="button" data-action="logout">Salir</button>
         </div>
@@ -441,14 +441,14 @@
         <form class="form" data-form="resident">
           <div class="form-row">
             <label class="field">
-              <span class="label">Número de departamento</span>
-              <input class="input" name="dept_number" type="number" min="1" max="9999" inputmode="numeric" placeholder="Ej. 401" />
+              <span class="label">Letra del departamento</span>
+              <input class="input" name="dept_number" type="text" maxlength="1" pattern="[A-Ja-j]" title="Solo una letra de la A a la J" placeholder="Ej. A" />
             </label>
             <label class="field">
               <span class="label">Rol</span>
               <select class="select" name="role">
                 <option value="resident">Vecino</option>
-                <option value="committee">Comité</option>
+                <option value="admin">Admin</option>
               </select>
             </label>
           </div>
@@ -537,6 +537,6 @@
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-    <script src="/js/app.js?v=4" defer></script>
+    <script src="/js/app.js?v=5" defer></script>
   </body>
 </html>

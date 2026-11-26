@@ -25,7 +25,7 @@ class Resident(Base):
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    dept_number: Mapped[int] = mapped_column(Integer, nullable=False, unique=True)
+    dept_number: Mapped[str] = mapped_column(String(1), nullable=False, unique=True)
     name: Mapped[str] = mapped_column(String(60), nullable=False)
     role: Mapped[str] = mapped_column(String(16), nullable=False, default="resident")
     phone: Mapped[str | None] = mapped_column(String(32), nullable=True)

@@ -21,9 +21,10 @@ AVATAR_COLORS = (
 )
 
 
-def avatar_for(name: str, dept_number: int) -> tuple[str, str]:
+def avatar_for(name: str, dept_number: str) -> tuple[str, str]:
     initials = "".join(part[0] for part in name.split()[:2] if part).upper()[:2]
-    return AVATAR_COLORS[dept_number % len(AVATAR_COLORS)], initials or "🏠"
+    index = ord(dept_number[0].upper()) - ord("A") if dept_number else 0
+    return AVATAR_COLORS[index % len(AVATAR_COLORS)], initials or "🏠"
 
 
 def current_period() -> str:

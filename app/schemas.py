@@ -1,9 +1,18 @@
 from datetime import date, datetime
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-Role = Literal["committee", "resident"]
+Role = Literal["admin", "resident"]
+DeptLetter = Literal["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"]
+
+
+class DeptBase(BaseModel):
+    @field_validator("dept_number", mode="before", check_fields=False)
+    @classmethod
+    def normalize_dept_number(cls, value):
+        return value.upper() if isinstance(value, str) else value
+
 AnnouncementCategory = Literal["Urgente", "Mantenimiento", "Avisos Generales", "Acuerdos"]
 ChoreArea = Literal[
     "Escaleras",
@@ -23,22 +32,22 @@ ParkingSpotType = Literal["Cubo", "Descubierto"]
 ParkingStatus = Literal["Disponible", "Solicitado", "Prestado"]
 
 
-class UserProfile(BaseModel):
+class UserProfile(DeptBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    dept_number: int
+    dept_number: DeptLetter
     name: str
     role: Role
     avatar_color: str
     avatar_icon: str
 
 
-class ResidentOut(BaseModel):
+class ResidentOut(DeptBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    dept_number: int
+    dept_number: DeptLetter
     name: str
     role: Role
     phone: str | None = None
@@ -51,13 +60,13 @@ class ResidentOut(BaseModel):
     created_at: datetime
 
 
-class PINLogin(BaseModel):
-    dept_number: int
+class PINLogin(DeptBase):
+    dept_number: DeptLetter
     pin: str = Field(min_length=1, max_length=72)
 
 
-class ResidentCreate(BaseModel):
-    dept_number: int = Field(gt=0)
+class ResidentCreate(DeptBase):
+    dept_number: DeptLetter
     name: str = Field(min_length=1, max_length=60)
     role: Role = "resident"
     pin: str = Field(min_length=4, max_length=72)
@@ -66,8 +75,8 @@ class ResidentCreate(BaseModel):
     emergency_phone: str | None = Field(default=None, max_length=32)
 
 
-class ResidentUpdate(BaseModel):
-    dept_number: int | None = Field(default=None, gt=0)
+class ResidentUpdate(DeptBase):
+    dept_number: DeptLetter | None = None
     name: str | None = Field(default=None, min_length=1, max_length=60)
     role: Role | None = None
     pin: str | None = Field(default=None, min_length=4, max_length=72)

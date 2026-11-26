@@ -5,7 +5,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session, joinedload
 
 from ..database import get_db
-from ..deps import committee_only, get_current_user
+from ..deps import admin_only, get_current_user
 from ..models import Contribution, Expense, Resident
 from ..schemas import (
     ContributionCreate,
@@ -98,7 +98,7 @@ def list_expenses(
 def create_expense(
     payload: ExpenseCreate,
     db: Session = Depends(get_db),
-    current_user: Resident = Depends(committee_only),
+    current_user: Resident = Depends(admin_only),
 ):
     values = payload.model_dump()
     values["receipt_url"] = validate_image_data_url(values["receipt_url"])
@@ -113,7 +113,7 @@ def update_expense(
     expense_id: int,
     payload: ExpenseUpdate,
     db: Session = Depends(get_db),
-    current_user: Resident = Depends(committee_only),
+    current_user: Resident = Depends(admin_only),
 ):
     expense = _require_expense(expense_id, db)
     values = payload.model_dump(exclude_unset=True)
@@ -129,7 +129,7 @@ def update_expense(
 def delete_expense(
     expense_id: int,
     db: Session = Depends(get_db),
-    current_user: Resident = Depends(committee_only),
+    current_user: Resident = Depends(admin_only),
 ):
     expense = _require_expense(expense_id, db)
     db.delete(expense)
@@ -182,7 +182,7 @@ def review_contribution(
     contribution_id: int,
     payload: ContributionReview,
     db: Session = Depends(get_db),
-    current_user: Resident = Depends(committee_only),
+    current_user: Resident = Depends(admin_only),
 ):
     contribution = _require_contribution(contribution_id, db)
     if payload.action == "approve":

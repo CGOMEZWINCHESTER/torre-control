@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
 from ..database import get_db
-from ..deps import committee_only, get_current_user
+from ..deps import admin_only, get_current_user
 from ..models import Announcement, AnnouncementComment, AnnouncementRead, Resident
 from ..schemas import (
     AnnouncementCreate,
@@ -92,7 +92,7 @@ def create_announcement(
     current_user: Resident = Depends(get_current_user),
 ):
     values = payload.model_dump()
-    values["is_pinned"] = values["is_pinned"] if current_user.role == "committee" else False
+    values["is_pinned"] = values["is_pinned"] if current_user.role == "admin" else False
     announcement = Announcement(**values, created_by=current_user.id)
     db.add(announcement)
     db.commit()
@@ -104,7 +104,7 @@ def update_announcement(
     announcement_id: int,
     payload: AnnouncementUpdate,
     db: Session = Depends(get_db),
-    current_user: Resident = Depends(committee_only),
+    current_user: Resident = Depends(admin_only),
 ):
     announcement = _require_announcement(announcement_id, db)
     for field, value in payload.model_dump(exclude_unset=True).items():
@@ -118,7 +118,7 @@ def update_announcement(
 def delete_announcement(
     announcement_id: int,
     db: Session = Depends(get_db),
-    current_user: Resident = Depends(committee_only),
+    current_user: Resident = Depends(admin_only),
 ):
     announcement = _require_announcement(announcement_id, db)
     db.delete(announcement)
@@ -201,7 +201,7 @@ def delete_comment(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Comentario no encontrado",
         )
-    if current_user.role != "committee" and comment.resident_id != current_user.id:
+    if current_user.role != "admin" and comment.resident_id != current_user.id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="No tienes permiso para eliminar este comentario",

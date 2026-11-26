@@ -44,12 +44,12 @@ function money(value) {
   return moneyFormatter.format(Number(value) || 0);
 }
 
-function isCommittee() {
-  return !!state.me && state.me.role === "committee";
+function isAdmin() {
+  return !!state.me && state.me.role === "admin";
 }
 
 function roleLabel(role) {
-  return role === "committee" ? "Comité" : "Vecino";
+  return role === "admin" ? "Admin" : "Vecino";
 }
 
 function safeColor(value) {
@@ -216,18 +216,18 @@ function updateHeader() {
   document.getElementById("header-user").textContent = state.me
     ? "Depto " + state.me.dept_number + " · " + state.me.name
     : "";
-  document.getElementById("header-badge").classList.toggle("hidden", !isCommittee());
+  document.getElementById("header-badge").classList.toggle("hidden", !isAdmin());
 }
 
 function updateActionButtons() {
-  const committee = isCommittee();
+  const admin = isAdmin();
   document.getElementById("add-announcement").classList.remove("hidden");
-  document.getElementById("pin-field").classList.toggle("hidden", !committee);
-  document.getElementById("add-chore").classList.toggle("hidden", !committee);
-  document.getElementById("add-expense").classList.toggle("hidden", !(committee && state.financeTab === "expenses"));
+  document.getElementById("pin-field").classList.toggle("hidden", !admin);
+  document.getElementById("add-chore").classList.toggle("hidden", !admin);
+  document.getElementById("add-expense").classList.toggle("hidden", !(admin && state.financeTab === "expenses"));
   document.getElementById("add-contribution").classList.toggle("hidden", state.financeTab !== "contributions");
-  document.getElementById("add-parking").classList.toggle("hidden", !(committee && state.neighborsTab === "parking"));
-  document.getElementById("add-resident").classList.toggle("hidden", !(committee && state.neighborsTab === "directory"));
+  document.getElementById("add-parking").classList.toggle("hidden", !(admin && state.neighborsTab === "parking"));
+  document.getElementById("add-resident").classList.toggle("hidden", !(admin && state.neighborsTab === "directory"));
 }
 
 function handleUnauthorized() {
@@ -312,11 +312,12 @@ function renderPinDots() {
 }
 
 function selectDepartment(dept) {
+  const letter = String(dept).toUpperCase();
   const profile = state.profiles.find(function (item) {
-    return Number(item.dept_number) === Number(dept);
+    return String(item.dept_number).toUpperCase() === letter;
   });
   if (!profile) return;
-  state.selectedDept = Number(dept);
+  state.selectedDept = letter;
   state.pin = "";
   document.getElementById("profile-grid").classList.add("hidden");
   document.getElementById("pin-panel").classList.remove("hidden");
@@ -408,7 +409,7 @@ function announcementCard(item) {
   const author = item.creator ? item.creator.name : "Vecino";
   const commentHtml = comments.map(function (comment) {
     const commentAuthor = comment.author ? comment.author.name : "Vecino";
-    const removable = isCommittee() || comment.resident_id === state.me.id;
+    const removable = isAdmin() || comment.resident_id === state.me.id;
     return '<div class="comment">' +
       '<div class="comment__head"><strong>' + escapeHtml(commentAuthor) + "</strong><span>" + escapeHtml(formatDateTime(comment.created_at)) + "</span></div>" +
       "<p>" + escapeHtml(comment.body) + "</p>" +
@@ -416,9 +417,9 @@ function announcementCard(item) {
       "</div>";
   }).join("");
 
-  let committeeActions = "";
-  if (isCommittee()) {
-    committeeActions =
+  let adminActions = "";
+  if (isAdmin()) {
+    adminActions =
       '<button class="btn btn-small" type="button" data-action="edit-announcement" data-id="' + escapeHtml(item.id) + '">Editar</button>' +
       '<button class="btn btn-small" type="button" data-action="delete-announcement" data-id="' + escapeHtml(item.id) + '">Eliminar</button>';
   }
@@ -438,7 +439,7 @@ function announcementCard(item) {
     '<input class="input" name="body" maxlength="2000" required placeholder="Escribe un comentario" aria-label="Comentario" />' +
     '<button class="btn btn-primary" type="submit">Enviar</button>' +
     "</form>" +
-    (committeeActions ? '<div class="card__actions">' + committeeActions + "</div>" : "") +
+    (adminActions ? '<div class="card__actions">' + adminActions + "</div>" : "") +
     "</article>";
 }
 
@@ -467,7 +468,7 @@ function choreStatus(chore) {
 }
 
 function canManageChore(chore) {
-  return isCommittee() || chore.assigned_to === state.me.id;
+  return isAdmin() || chore.assigned_to === state.me.id;
 }
 
 function choreCard(chore) {
@@ -482,7 +483,7 @@ function choreCard(chore) {
       ? '<button class="btn btn-small" type="button" data-action="reopen-chore" data-id="' + escapeHtml(chore.id) + '">Desmarcar</button>'
       : '<button class="btn btn-small btn-primary" type="button" data-action="complete-chore" data-id="' + escapeHtml(chore.id) + '">Completar</button>';
   }
-  if (isCommittee()) {
+  if (isAdmin()) {
     actions += '<button class="btn btn-small" type="button" data-action="edit-chore" data-id="' + escapeHtml(chore.id) + '">Editar</button>';
     actions += '<button class="btn btn-small" type="button" data-action="delete-chore" data-id="' + escapeHtml(chore.id) + '">Eliminar</button>';
   }
@@ -550,7 +551,7 @@ function renderSummary() {
 function expenseCard(expense) {
   const creator = expense.creator ? expense.creator.name : "Vecino";
   let actions = "";
-  if (isCommittee()) {
+  if (isAdmin()) {
     actions = '<div class="card__actions">' +
       '<button class="btn btn-small" type="button" data-action="edit-expense" data-id="' + escapeHtml(expense.id) + '">Editar</button>' +
       '<button class="btn btn-small" type="button" data-action="delete-expense" data-id="' + escapeHtml(expense.id) + '">Eliminar</button>' +
@@ -577,7 +578,7 @@ function contributionCard(contribution) {
   const resident = contribution.resident;
   const label = resident ? "Depto " + resident.dept_number + " · " + resident.name : "Vecino";
   let actions = "";
-  if (isCommittee() && contribution.status === "Pendiente") {
+  if (isAdmin() && contribution.status === "Pendiente") {
     actions = '<div class="card__actions">' +
       '<button class="btn btn-small btn-success" type="button" data-action="review-contribution" data-id="' + escapeHtml(contribution.id) + '" data-review="approve">Aprobar</button>' +
       '<button class="btn btn-small" type="button" data-action="review-contribution" data-id="' + escapeHtml(contribution.id) + '" data-review="reject">Rechazar</button>' +
@@ -628,9 +629,11 @@ function residentCard(resident) {
     ? escapeHtml(resident.emergency_name || "Sin nombre") + (resident.emergency_phone ? " · " + escapeHtml(resident.emergency_phone) : "")
     : "Sin registrar";
   let actions = "";
-  if (isCommittee()) {
+  if (isAdmin()) {
     actions = '<div class="card__actions">' +
       '<button class="btn btn-small" type="button" data-action="edit-resident" data-id="' + escapeHtml(resident.id) + '">Editar departamento</button>' +
+      (resident.id === state.me.id ? "" :
+        '<button class="btn btn-small btn-danger" type="button" data-action="delete-resident" data-id="' + escapeHtml(resident.id) + '">Eliminar</button>') +
       "</div>";
   }
   return '<article class="card">' +
@@ -648,7 +651,7 @@ function residentCard(resident) {
 
 function renderResidents() {
   const sorted = state.residents.slice().sort(function (left, right) {
-    return Number(left.dept_number) - Number(right.dept_number);
+    return String(left.dept_number).localeCompare(String(right.dept_number));
   });
   renderItems("resident-list", "empty-residents", sorted.map(residentCard).join(""), sorted.length);
 }
@@ -666,7 +669,7 @@ function parkingStatusTone(status) {
 }
 
 function canManageSpot(spot) {
-  return isCommittee() || spot.owner_id === state.me.id;
+  return isAdmin() || spot.owner_id === state.me.id;
 }
 
 function parkingCard(spot) {
@@ -685,7 +688,7 @@ function parkingCard(spot) {
   if (spot.status === "Prestado" && canManageSpot(spot)) {
     actions += '<button class="btn btn-small" type="button" data-action="release-parking" data-id="' + escapeHtml(spot.id) + '">Liberar</button>';
   }
-  if (isCommittee()) {
+  if (isAdmin()) {
     actions += '<button class="btn btn-small" type="button" data-action="edit-parking" data-id="' + escapeHtml(spot.id) + '">Editar</button>';
     actions += '<button class="btn btn-small" type="button" data-action="delete-parking" data-id="' + escapeHtml(spot.id) + '">Eliminar</button>';
   }
@@ -736,7 +739,7 @@ function fillResidentSelect(select, includeEmpty) {
   if (!select) return;
   const previous = select.value;
   const sorted = state.residents.slice().sort(function (left, right) {
-    return Number(left.dept_number) - Number(right.dept_number);
+    return String(left.dept_number).localeCompare(String(right.dept_number));
   });
   let html = includeEmpty ? '<option value="">Sin asignar</option>' : "";
   html += sorted.map(function (resident) {
@@ -910,7 +913,7 @@ async function saveAnnouncement(form) {
     title: formText(form, "title"),
     body: formText(form, "body"),
     category: form.elements["category"].value,
-    is_pinned: isCommittee() && form.elements["is_pinned"].checked
+    is_pinned: isAdmin() && form.elements["is_pinned"].checked
   };
   if (!payload.title || !payload.body) {
     showToast("Completa el título y el mensaje");
@@ -1013,14 +1016,14 @@ async function saveContribution(form) {
 async function saveResident(form) {
   const id = state.editing.residentId;
   const pin = formText(form, "pin");
-  const deptNumber = Number(formText(form, "dept_number"));
+  const deptLetter = formText(form, "dept_number").toUpperCase();
   const name = formText(form, "name");
-  if (!deptNumber || !name || (!id && !pin)) {
-    showToast("Completa departamento, nombre y PIN");
+  if (!/^[A-J]$/.test(deptLetter) || !name || (!id && !pin)) {
+    showToast("Usa una letra de la A a la J y completa nombre y PIN");
     return;
   }
   const payload = {
-    dept_number: deptNumber,
+    dept_number: deptLetter,
     name: name,
     role: form.elements["role"].value,
     phone: formText(form, "phone") || null,
@@ -1303,6 +1306,11 @@ async function handleClick(event) {
       break;
     case "edit-resident":
       openResidentSheet(Number(id));
+      break;
+    case "delete-resident":
+      askDelete("¿Eliminar el departamento?", "Se borrarán sus anuncios y aportaciones; las tareas y gastos pasarán al admin actual.", function () {
+        return removeEntity("/api/residents/" + id, "Departamento eliminado", [loadAllData, loadProfiles]);
+      });
       break;
     case "new-parking":
       openParkingSheet(null);

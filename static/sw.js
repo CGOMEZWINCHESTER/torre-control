@@ -1,10 +1,10 @@
-const SHELL_CACHE = "torre-shell-v4";
-const API_CACHE = "torre-api-v4";
+const SHELL_CACHE = "torre-shell-v5";
+const API_CACHE = "torre-api-v5";
 const SHELL = [
   "/",
   "/index.html",
-  "/css/styles.css?v=4",
-  "/js/app.js?v=4",
+  "/css/styles.css?v=5",
+  "/js/app.js?v=5",
   "/manifest.json",
   "/icons/icon-192.svg",
   "/icons/icon-512.svg"

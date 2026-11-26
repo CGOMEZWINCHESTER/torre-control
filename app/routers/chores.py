@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
 from ..database import get_db
-from ..deps import can_manage_chore, committee_only, get_current_user
+from ..deps import can_manage_chore, admin_only, get_current_user
 from ..models import Chore, Resident
 from ..schemas import (
     ChoreComplete,
@@ -97,7 +97,7 @@ def list_chores(
 def create_chore(
     payload: ChoreCreate,
     db: Session = Depends(get_db),
-    current_user: Resident = Depends(committee_only),
+    current_user: Resident = Depends(admin_only),
 ):
     chore = Chore(**payload.model_dump(), created_by=current_user.id)
     db.add(chore)
@@ -110,7 +110,7 @@ def update_chore(
     chore_id: int,
     payload: ChoreUpdate,
     db: Session = Depends(get_db),
-    current_user: Resident = Depends(committee_only),
+    current_user: Resident = Depends(admin_only),
 ):
     chore = _require_chore(chore_id, db)
     values = payload.model_dump(exclude_unset=True)
@@ -126,7 +126,7 @@ def update_chore(
 def delete_chore(
     chore_id: int,
     db: Session = Depends(get_db),
-    current_user: Resident = Depends(committee_only),
+    current_user: Resident = Depends(admin_only),
 ):
     chore = _require_chore(chore_id, db)
     db.delete(chore)

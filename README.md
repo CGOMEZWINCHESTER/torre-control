@@ -42,7 +42,7 @@ torre-control/
 
 | Tabla | Contenido del seed |
 | --- | --- |
-| `torre_residents` | 10 departamentos, 1 `committee` y 9 `resident` |
+| `torre_residents` | 10 departamentos (`A` a `J`), 1 `admin` y 9 `resident` |
 | `torre_announcements` | 6 anuncios: 2 urgentes (uno fijado), 2 mantenimiento, 1 acuerdo y 1 aviso general |
 | `torre_announcement_reads` | 24 lecturas repartidas entre anuncios y residentes |
 | `torre_announcement_comments` | 4 comentarios realistas |
@@ -55,11 +55,11 @@ Detalles del seed:
 
 - El PIN de todos los residentes es `1234` y usa el mismo hash bcrypt: `$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K`.
 - Evidencias, comprobantes y recibos usan la misma data URL PNG válida de 1 píxel.
-- La lista del enunciado traía 9 números de departamento; se añadió el `305` para completar los 10.
+- La lista del enunciado traía 9 números de departamento; se añadió el `305` para completar los 10 y después se mapearon a las letras `A` a `J`.
 - Se añadió la columna `torre_chores.next_chore_id` porque el backend la usa al generar la siguiente tarea recurrente; no estaba en la lista resumida del contrato.
-- Con los datos de noviembre 2026, los deptos `302` (sin cuota aprobada) y `303` (cooperación de $500.00) quedan "Con adeudo"; el depto `305` se pone al corriente con una cooperación de $1,000.00.
+- Con los datos de noviembre 2026, los deptos `G` (sin cuota aprobada) y `H` (cooperación de $500.00) quedan "Con adeudo"; el depto `J` se pone al corriente con una cooperación de $1,000.00.
 
-Si la base ya tiene el seed anterior, ejecuta `db/migrations/002_rename_torre_40.sql` en el SQL Editor de Supabase para cambiar el texto "Torre Roble" a "Torre 40" en los anuncios.
+Si la base ya tiene el seed anterior, ejecuta en orden `db/migrations/002_rename_torre_40.sql` y `db/migrations/003_letters_and_admin.sql` en el SQL Editor de Supabase. La segunda migración convierte los números en letras `A` a `J` y el rol `committee` en `admin`.
 
 ## Puesta en marcha local
 
@@ -93,37 +93,37 @@ Selecciona el departamento en la pantalla de ingreso y escribe el PIN `1234`.
 
 | Departamento | Residente | Rol | Situación en 2026-11 |
 | --- | --- | --- | --- |
-| 101 | Laura Martínez | `committee` | Al corriente |
-| 102 | Diego Ramírez | `resident` | Al corriente |
-| 201 | Fernanda López | `resident` | Al corriente |
-| 202 | Álvaro Hernández | `resident` | Al corriente |
-| 203 | Mariana González | `resident` | Al corriente |
-| 301 | Javier Torres | `resident` | Al corriente |
-| 302 | Carolina Vázquez | `resident` | Con adeudo |
-| 303 | Ricardo Solís | `resident` | Con adeudo |
-| 304 | Paola Medina | `resident` | Al corriente |
-| 305 | Enrique Flores | `resident` | Al corriente |
+| A | Laura Martínez | `admin` | Al corriente |
+| B | Diego Ramírez | `resident` | Al corriente |
+| C | Fernanda López | `resident` | Al corriente |
+| D | Álvaro Hernández | `resident` | Al corriente |
+| E | Mariana González | `resident` | Al corriente |
+| F | Javier Torres | `resident` | Al corriente |
+| G | Carolina Vázquez | `resident` | Con adeudo |
+| H | Ricardo Solís | `resident` | Con adeudo |
+| I | Paola Medina | `resident` | Al corriente |
+| J | Enrique Flores | `resident` | Al corriente |
 
 El estado se calcula en `app/services/residents.py` sumando aportaciones aprobadas del **mes actual**; si se ejecuta fuera de noviembre 2026, actualiza los valores de `period` en el seed o cambia la fecha del sistema para ver los estados anteriores.
 
 ## Roles
 
-`committee` (depto 101):
+`admin` (depto A, Laura Martínez):
 
 - Publicar, editar, fijar y eliminar anuncios.
 - Crear, editar y eliminar tareas; cerrarlas o reabrirlas.
 - Aprobar o rechazar aportaciones.
 - Registrar, editar y eliminar egresos.
-- Crear y editar departamentos, asignar PIN y rol, y actualizar datos de contacto.
+- Crear, editar y eliminar departamentos, asignar PIN y rol, y actualizar datos de contacto.
 - Administrar lugares de estacionamiento.
 
 `resident`:
 
 - Marcar como completadas o reabrir las tareas asignadas y adjuntar evidencia.
 - Subir comprobantes de aportaciones y publicar/eliminar sus comentarios.
-- Publicar anuncios en la pizarra; solo el comité puede fijarlos arriba.
+- Publicar anuncios en la pizarra; solo el admin puede fijarlos arriba.
 - Marcar anuncios como leídos.
-- Solicitar un estacionamiento; la aprobación o liberación corresponde al comité o al dueño del lugar.
+- Solicitar un estacionamiento; la aprobación o liberación corresponde al admin o al dueño del lugar.
 
 ## Endpoints principales
 
@@ -135,14 +135,16 @@ El estado se calcula en `app/services/residents.py` sumando aportaciones aprobad
 | `POST` | `/api/auth/logout` | Cierra la sesión |
 | `GET` | `/api/auth/me` | Residente autenticado y su estado de pago |
 | `GET` | `/api/residents` | Lista de residentes |
-| `PATCH` | `/api/residents/{id}` | Edita contacto/rol (comité) |
+| `POST` | `/api/residents` | Crea un departamento `A`-`J` (admin) |
+| `PATCH` | `/api/residents/{id}` | Edita letra, contacto, PIN y rol (admin) |
+| `DELETE` | `/api/residents/{id}` | Elimina un departamento y limpia sus referencias (admin) |
 | `GET` / `POST` | `/api/announcements` | Lista y crea anuncios |
 | `PATCH` / `DELETE` | `/api/announcements/{id}` | Edita y elimina anuncios |
 | `POST` / `DELETE` | `/api/announcements/{id}/read` | Marca o desmarca lectura |
 | `POST` | `/api/announcements/{id}/comments` | Publica un comentario |
 | `DELETE` | `/api/announcements/{id}/comments/{comment_id}` | Elimina un comentario |
 | `GET` | `/api/chores?filter=all\|mine\|pending\|completed` | Lista tareas con filtro |
-| `POST` | `/api/chores` | Crea una tarea (comité) |
+| `POST` | `/api/chores` | Crea una tarea (admin) |
 | `PATCH` / `DELETE` | `/api/chores/{id}` | Edita y elimina una tarea |
 | `POST` | `/api/chores/{id}/complete` | Completa con evidencia y genera recurrencia |
 | `POST` | `/api/chores/{id}/reopen` | Reabre una tarea |
@@ -162,7 +164,7 @@ El estado se calcula en `app/services/residents.py` sumando aportaciones aprobad
 - FastAPI monta `static/` en `/`; el service worker y el manifest están en esa carpeta.
 - El service worker usa caché para el shell y para respuestas `GET /api/...`, separando por cabecera `X-User-Id`. Al cambiar de perfil conviene limpiar la caché de la API.
 - El registro del service worker requiere HTTPS o `localhost`; en producción `SECURE_COOKIES=true`.
-- El manifest se llama "Torre 40 · Control vecinal" y el service worker usa las cachés `torre-shell-v4` y `torre-api-v4`.
+- El manifest se llama "Torre 40 · Control vecinal" y el service worker usa las cachés `torre-shell-v5` y `torre-api-v5`.
 
 ## Comandos de validación
 

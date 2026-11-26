@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 
 from ..database import get_db
-from ..deps import can_manage_parking, committee_only, get_current_user
+from ..deps import can_manage_parking, admin_only, get_current_user
 from ..models import ParkingSpot, Resident
 from ..schemas import (
     MessageOut,
@@ -59,7 +59,7 @@ def list_parking(
 def create_parking(
     payload: ParkingCreate,
     db: Session = Depends(get_db),
-    current_user: Resident = Depends(committee_only),
+    current_user: Resident = Depends(admin_only),
 ):
     values = payload.model_dump()
     if db.scalar(select(ParkingSpot).where(ParkingSpot.code == values["code"])) is not None:
@@ -78,7 +78,7 @@ def update_parking(
     spot_id: int,
     payload: ParkingUpdate,
     db: Session = Depends(get_db),
-    current_user: Resident = Depends(committee_only),
+    current_user: Resident = Depends(admin_only),
 ):
     spot = _require_spot(spot_id, db)
     values = payload.model_dump(exclude_unset=True)
@@ -104,7 +104,7 @@ def update_parking(
 def delete_parking(
     spot_id: int,
     db: Session = Depends(get_db),
-    current_user: Resident = Depends(committee_only),
+    current_user: Resident = Depends(admin_only),
 ):
     spot = _require_spot(spot_id, db)
     db.delete(spot)
@@ -135,7 +135,7 @@ def approve_parking(
     if not can_manage_parking(current_user, spot):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Solo el propietario o el comité puede aprobar el préstamo",
+            detail="Solo el propietario o el admin puede aprobar el préstamo",
         )
     spot.status = "Prestado"
     db.commit()
@@ -152,7 +152,7 @@ def release_parking(
     if not can_manage_parking(current_user, spot):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Solo el propietario o el comité puede liberar el lugar",
+            detail="Solo el propietario o el admin puede liberar el lugar",
         )
     spot.status = "Disponible"
     spot.borrower_id = None

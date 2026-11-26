@@ -2,9 +2,9 @@ BEGIN;
 
 CREATE TABLE IF NOT EXISTS torre_residents (
     id BIGSERIAL PRIMARY KEY,
-    dept_number INTEGER NOT NULL UNIQUE CHECK (dept_number > 0),
+    dept_number VARCHAR(1) NOT NULL UNIQUE CHECK (dept_number ~ '^[A-J]$'),
     name VARCHAR(60) NOT NULL CHECK (char_length(name) BETWEEN 1 AND 60),
-    role VARCHAR(16) NOT NULL DEFAULT 'resident' CHECK (role IN ('committee', 'resident')),
+    role VARCHAR(16) NOT NULL DEFAULT 'resident' CHECK (role IN ('admin', 'resident')),
     phone VARCHAR(32) CHECK (char_length(phone) BETWEEN 7 AND 32),
     emergency_name VARCHAR(60) CHECK (char_length(emergency_name) BETWEEN 1 AND 60),
     emergency_phone VARCHAR(32) CHECK (char_length(emergency_phone) BETWEEN 7 AND 32),
@@ -126,16 +126,16 @@ CREATE INDEX IF NOT EXISTS ix_torre_parking_spots_borrower ON torre_parking_spot
 
 INSERT INTO torre_residents (id, dept_number, name, role, phone, emergency_name, emergency_phone, avatar_color, avatar_icon, pin_hash, created_at)
 VALUES
-    (1, 101, 'Laura Martínez', 'committee', '55 1234 5678', 'Roberto Martínez', '55 8765 4321', '#b45309', 'LM', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:00:00-06'),
-    (2, 102, 'Diego Ramírez', 'resident', '55 2345 6789', 'Mónica Ramírez', '55 9876 5432', '#2563eb', 'DR', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:05:00-06'),
-    (3, 201, 'Fernanda López', 'resident', '55 3456 7890', 'Javier López', '55 1111 2222', '#db2777', 'FL', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:10:00-06'),
-    (4, 202, 'Álvaro Hernández', 'resident', '55 4567 8901', 'Lucía Hernández', '55 2222 3333', '#059669', 'AH', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:15:00-06'),
-    (5, 203, 'Mariana González', 'resident', '55 5678 9012', 'Carlos González', '55 3333 4444', '#7c3aed', 'MG', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:20:00-06'),
-    (6, 301, 'Javier Torres', 'resident', '55 6789 0123', 'Elena Torres', '55 4444 5555', '#dc2626', 'JT', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:25:00-06'),
-    (7, 302, 'Carolina Vázquez', 'resident', '55 7890 1234', 'Andrés Vázquez', '55 5555 6666', '#0891b2', 'CV', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:30:00-06'),
-    (8, 303, 'Ricardo Solís', 'resident', '55 8901 2345', 'Patricia Solís', '55 6666 7777', '#ea580c', 'RS', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:35:00-06'),
-    (9, 304, 'Paola Medina', 'resident', '55 9012 3456', 'Hugo Medina', '55 7777 8888', '#4f46e5', 'PM', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:40:00-06'),
-    (10, 305, 'Enrique Flores', 'resident', '55 0123 4567', 'Sofía Flores', '55 8888 9999', '#65a30d', 'EF', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:45:00-06')
+    (1, 'A', 'Laura Martínez', 'admin', '55 1234 5678', 'Roberto Martínez', '55 8765 4321', '#b45309', 'LM', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:00:00-06'),
+    (2, 'B', 'Diego Ramírez', 'resident', '55 2345 6789', 'Mónica Ramírez', '55 9876 5432', '#2563eb', 'DR', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:05:00-06'),
+    (3, 'C', 'Fernanda López', 'resident', '55 3456 7890', 'Javier López', '55 1111 2222', '#db2777', 'FL', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:10:00-06'),
+    (4, 'D', 'Álvaro Hernández', 'resident', '55 4567 8901', 'Lucía Hernández', '55 2222 3333', '#059669', 'AH', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:15:00-06'),
+    (5, 'E', 'Mariana González', 'resident', '55 5678 9012', 'Carlos González', '55 3333 4444', '#7c3aed', 'MG', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:20:00-06'),
+    (6, 'F', 'Javier Torres', 'resident', '55 6789 0123', 'Elena Torres', '55 4444 5555', '#dc2626', 'JT', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:25:00-06'),
+    (7, 'G', 'Carolina Vázquez', 'resident', '55 7890 1234', 'Andrés Vázquez', '55 5555 6666', '#0891b2', 'CV', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:30:00-06'),
+    (8, 'H', 'Ricardo Solís', 'resident', '55 8901 2345', 'Patricia Solís', '55 6666 7777', '#ea580c', 'RS', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:35:00-06'),
+    (9, 'I', 'Paola Medina', 'resident', '55 9012 3456', 'Hugo Medina', '55 7777 8888', '#4f46e5', 'PM', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:40:00-06'),
+    (10, 'J', 'Enrique Flores', 'resident', '55 0123 4567', 'Sofía Flores', '55 8888 9999', '#65a30d', 'EF', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:45:00-06')
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO torre_announcements (id, title, body, category, is_pinned, created_by, created_at, updated_at)
@@ -226,13 +226,13 @@ ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO torre_parking_spots (id, code, location, spot_type, status, owner_id, borrower_id, loan_until, note)
 VALUES
-    (1, 'P-01', 'Subterráneo nivel -1, zona A', 'Cubo', 'Disponible', 1, NULL, NULL, 'Lugar asignado al depto 101'),
-    (2, 'P-02', 'Subterráneo nivel -1, zona A', 'Cubo', 'Disponible', 2, NULL, NULL, 'Uso exclusivo del depto 102'),
-    (3, 'P-03', 'Subterráneo nivel -1, zona B', 'Descubierto', 'Prestado', 3, 8, DATE '2026-12-05', 'Préstamo temporal al depto 303'),
+    (1, 'P-01', 'Subterráneo nivel -1, zona A', 'Cubo', 'Disponible', 1, NULL, NULL, 'Lugar asignado al depto A'),
+    (2, 'P-02', 'Subterráneo nivel -1, zona A', 'Cubo', 'Disponible', 2, NULL, NULL, 'Uso exclusivo del depto B'),
+    (3, 'P-03', 'Subterráneo nivel -1, zona B', 'Descubierto', 'Prestado', 3, 8, DATE '2026-12-05', 'Préstamo temporal al depto H'),
     (4, 'P-04', 'Subterráneo nivel -1, zona B', 'Cubo', 'Disponible', 4, NULL, NULL, 'Cubo con llave en caseta'),
-    (5, 'P-05', 'Planta baja, frente a entrada', 'Descubierto', 'Prestado', 5, 10, DATE '2026-12-01', 'Dejado al depto 305 durante la obra'),
-    (6, 'P-06', 'Planta baja, frente a entrada', 'Cubo', 'Solicitado', 6, 7, NULL, 'Solicitud pendiente del depto 302'),
-    (7, 'P-07', 'Lateral calle Roble, frente al jardín', 'Descubierto', 'Disponible', 7, NULL, NULL, 'Sin restricción de horario'),
+    (5, 'P-05', 'Planta baja, frente a entrada', 'Descubierto', 'Prestado', 5, 10, DATE '2026-12-01', 'Dejado al depto J durante la obra'),
+    (6, 'P-06', 'Planta baja, frente a entrada', 'Cubo', 'Solicitado', 6, 7, NULL, 'Solicitud pendiente del depto G'),
+    (7, 'P-07', 'Lateral calle 40, frente al jardín', 'Descubierto', 'Disponible', 7, NULL, NULL, 'Sin restricción de horario'),
     (8, 'P-08', 'Subterráneo nivel -2, zona C', 'Cubo', 'Disponible', 9, NULL, NULL, 'Cerca del cuarto de máquinas')
 ON CONFLICT (id) DO NOTHING;
 
