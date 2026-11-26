@@ -572,30 +572,15 @@ a {
   box-shadow: var(--shadow);
 }
 
-.stat-card:first-child {
-  grid-column: 1 / -1;
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
-}
-
 .stat-card span {
   color: var(--muted);
   font-size: 0.75rem;
   font-weight: 700;
 }
 
-.stat-card:first-child span {
-  color: #cbd5e1;
-}
-
 .stat-card strong {
   font-size: 1.15rem;
   letter-spacing: -0.02em;
-}
-
-.stat-card:first-child strong {
-  font-size: 1.6rem;
 }
 
 .summary-note {
