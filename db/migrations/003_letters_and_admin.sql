@@ -117,6 +117,14 @@ UPDATE torre_residents
 SET role = 'admin'
 WHERE role = 'committee';
 
+UPDATE torre_residents
+SET role = 'resident'
+WHERE dept_number = 'A';
+
+UPDATE torre_residents
+SET role = 'admin'
+WHERE dept_number = 'B';
+
 ALTER TABLE torre_residents
 ADD CONSTRAINT torre_residents_dept_number_check CHECK (dept_number ~ '^[A-J]$');
 

@@ -126,8 +126,8 @@ CREATE INDEX IF NOT EXISTS ix_torre_parking_spots_borrower ON torre_parking_spot
 
 INSERT INTO torre_residents (id, dept_number, name, role, phone, emergency_name, emergency_phone, avatar_color, avatar_icon, pin_hash, created_at)
 VALUES
-    (1, 'A', 'Laura Martínez', 'admin', '55 1234 5678', 'Roberto Martínez', '55 8765 4321', '#b45309', 'LM', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:00:00-06'),
-    (2, 'B', 'Diego Ramírez', 'resident', '55 2345 6789', 'Mónica Ramírez', '55 9876 5432', '#2563eb', 'DR', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:05:00-06'),
+    (1, 'A', 'Laura Martínez', 'resident', '55 1234 5678', 'Roberto Martínez', '55 8765 4321', '#b45309', 'LM', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:00:00-06'),
+    (2, 'B', 'Diego Ramírez', 'admin', '55 2345 6789', 'Mónica Ramírez', '55 9876 5432', '#2563eb', 'DR', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:05:00-06'),
     (3, 'C', 'Fernanda López', 'resident', '55 3456 7890', 'Javier López', '55 1111 2222', '#db2777', 'FL', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:10:00-06'),
     (4, 'D', 'Álvaro Hernández', 'resident', '55 4567 8901', 'Lucía Hernández', '55 2222 3333', '#059669', 'AH', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:15:00-06'),
     (5, 'E', 'Mariana González', 'resident', '55 5678 9012', 'Carlos González', '55 3333 4444', '#7c3aed', 'MG', '$2b$10$qyS41qZ0ZnlLXuzo0DlFZOQHmKDIFD8D6p3boCFLVu87PZ4QElI9K', TIMESTAMPTZ '2026-11-01 09:20:00-06'),

@@ -93,8 +93,8 @@ Selecciona el departamento en la pantalla de ingreso y escribe el PIN `1234`.
 
 | Departamento | Residente | Rol | Situación en 2026-11 |
 | --- | --- | --- | --- |
-| A | Laura Martínez | `admin` | Al corriente |
-| B | Diego Ramírez | `resident` | Al corriente |
+| A | Laura Martínez | `resident` | Al corriente |
+| B | Diego Ramírez | `admin` | Al corriente |
 | C | Fernanda López | `resident` | Al corriente |
 | D | Álvaro Hernández | `resident` | Al corriente |
 | E | Mariana González | `resident` | Al corriente |
@@ -108,7 +108,7 @@ El estado se calcula en `app/services/residents.py` sumando aportaciones aprobad
 
 ## Roles
 
-`admin` (depto A, Laura Martínez):
+`admin` (depto B, Diego Ramírez):
 
 - Publicar, editar, fijar y eliminar anuncios.
 - Crear, editar y eliminar tareas; cerrarlas o reabrirlas.
