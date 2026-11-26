@@ -1207,7 +1207,7 @@ async function handleClick(event) {
 
   switch (action) {
     case "login-profile":
-      selectDepartment(Number(id));
+      selectDepartment(String(id));
       break;
     case "pin-back":
       resetPinPanel();
