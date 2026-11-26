@@ -141,7 +141,11 @@ def delete_resident(
     )
 
     db.execute(update(Chore).where(Chore.assigned_to == resident.id).values(assigned_to=None))
-    db.execute(update(Chore).where(Chore.completed_by == resident.id).values(completed_by=None))
+    db.execute(
+        update(Chore)
+        .where(Chore.completed_by == resident.id)
+        .values(completed_by=current_user.id)
+    )
     db.execute(update(Chore).where(Chore.created_by == resident.id).values(created_by=current_user.id))
 
     db.execute(
@@ -151,7 +155,7 @@ def delete_resident(
     db.execute(
         update(Contribution)
         .where(Contribution.approved_by == resident.id)
-        .values(approved_by=None)
+        .values(approved_by=current_user.id)
     )
 
     db.execute(
@@ -160,7 +164,7 @@ def delete_resident(
     db.execute(
         update(ParkingSpot)
         .where(ParkingSpot.borrower_id == resident.id)
-        .values(borrower_id=None)
+        .values(borrower_id=None, status="Disponible", loan_until=None)
     )
 
     db.delete(resident)
